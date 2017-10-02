@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/School-API.iml
