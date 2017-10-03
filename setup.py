@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='school-api',
-      version='1.0',
+      version='0.1.2',
       url='https://github.com/JoMingyu/School-API',
       license='MIT',
       author='PlanB',
