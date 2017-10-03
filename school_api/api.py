@@ -62,30 +62,15 @@ class SchoolAPI:
                 daily_menus = re.findall('[가-힇]+', data)
 
                 menu_dict = dict()
-                if '조식' in daily_menus:
-                    if '중식' in daily_menus:
-                        menu_dict['breakfast'] = daily_menus[1: daily_menus.index('중식')]
-                    elif '석식' in daily_menus:
-                        menu_dict['breakfast'] = daily_menus[1: daily_menus.index('석식')]
+                
+                timing = list(filter(re.compile('[조중석]{1}식').match, daily_menus))
+                for i in range(len(timing)):
+                    if i + 1 >= len(timing):
+                        menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1:]
                     else:
-                        menu_dict['breakfast'] = daily_menus[1:]
-                else:
-                    menu_dict['breakfast'] = '급식이 없습니다'
+                        menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
 
-                if '중식' in daily_menus:
-                    if '석식' in daily_menus:
-                        menu_dict['lunch'] = daily_menus[daily_menus.index('중식') + 1: daily_menus.index('석식')]
-                    else:
-                        menu_dict['lunch'] = daily_menus[daily_menus.index('중식') + 1:]
-                else:
-                    menu_dict['lunch'] = '급식이 없습니다'
-
-                if '석식' in daily_menus:
-                    menu_dict['dinner'] = daily_menus[daily_menus.index('석식') + 1:]
-                else:
-                    menu_dict['dinner'] = '급식이 없습니다'
-
-                self.menus.append({day: menu_dict})
+                self.menus.append({day: menu_dict})               
 
 
 if __name__ == '__main__':
