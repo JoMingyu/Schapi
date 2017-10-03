@@ -54,18 +54,20 @@ class SchoolAPI:
 
         resp = urlopen(_url.format(self.region, self.school_code, year, month))
         soup = BeautifulSoup(resp, 'html.parser')
-        monthly_menu = [td.text for td in soup.find(class_='tbl_type3 tbl_calendar').find_all('td') if td.text != ' ']
 
-        for data in monthly_menu:
+        for data in [td.text for td in soup.find(class_='tbl_type3 tbl_calendar').find_all('td') if td.text != ' ']:
             if len(data) > 1 and data != '자료가 없습니다':
                 day = int(re.findall('\d+', data)[0])
                 daily_menus = re.findall('[가-힇]+', data)
 
                 menu_dict = dict()
-                
-                timing = list(filter(re.compile('[조중석]{1}식').match, daily_menus))
+                # timing = list(filter(lambda menu: re.findall('[조중석]{1}식', menu), daily_menus))
+                timing = [menu for menu in daily_menus if re.match('[조중석]{1}식', menu)]
+                # 조식, 중식, 석식 중 있는 데이터만
+
                 for i in range(len(timing)):
                     if i + 1 >= len(timing):
+                        # 마지막 메뉴
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1:]
                     else:
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
