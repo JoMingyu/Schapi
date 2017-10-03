@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
@@ -72,8 +73,16 @@ class SchoolAPI:
                     else:
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
 
-                self.menus.append({day: menu_dict})               
+                try:
+                    menu_dict['breakfast'] = menu_dict['조식']
+                    menu_dict['lunch'] = menu_dict['중식']
+                    menu_dict['dinner'] = menu_dict['석식']
+                    del menu_dict['조식'], menu_dict['중식'], menu_dict['석식']
+                except KeyError:
+                    pass
+
+                self.menus.append(menu_dict)
 
 
 if __name__ == '__main__':
-    print(SchoolAPI(DAEJEON, 'G100000170').get_by_date(2016, 9, 20))
+    print(SchoolAPI(DAEJEON, 'G100000170').get_by_date(2017, 10, 19))
