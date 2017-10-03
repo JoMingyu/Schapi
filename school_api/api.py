@@ -27,22 +27,31 @@ class SchoolAPI:
     def __init__(self, region, school_code):
         self.region = region
         self.school_code = school_code
+
         self.menus = []
+        self.current_year = 0
+        self.current_month = 0
         # 파싱되기 전 대기
 
     def get_by_date(self, year, month, day):
-        if not self.menus:
-            self._parse(year, month)
+        self._validate(year, month)
 
         return self.menus[day - 1]
 
     def get_monthly(self, year, month):
-        if not self.menus:
-            self._parse(year, month)
+        self._validate(year, month)
 
         return self.menus
 
+    def _validate(self, year, month):
+        # 파싱 전 값 검증
+        if not self.menus or (self.current_year != year or self.current_month != month):
+            self._parse(year, month)
+
     def _parse(self, year, month):
+        self.current_year = year
+        self.current_month = month
+
         resp = urlopen(_url.format(self.region, self.school_code, year, month))
         soup = BeautifulSoup(resp, 'html.parser')
         monthly_menu = [td.text for td in soup.find(class_='tbl_type3 tbl_calendar').find_all('td') if td.text != ' ']
