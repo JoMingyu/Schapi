@@ -1,13 +1,13 @@
-# School-API
+# Schapi
 Python 기반 School API
 
 ## How to use
 ~~~
-pip install school-api
+pip install schapi
 ~~~
 
 ~~~
-from school_api import SchoolAPI, DAEJEON
+from schapi import SchoolAPI, DAEJEON
 api = SchoolAPI(DAEJEON, 'G100000170')
 
 print(api.get_by_date(2017, 9, 27))
