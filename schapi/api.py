@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+﻿# -*- coding: utf8 -*-
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
@@ -35,11 +35,35 @@ class SchoolAPI:
         # 파싱되기 전 대기
 
     def get_by_date(self, year, month, day):
+        """
+        Inquire school meals based date
+
+        :param year: Year to inquire
+        :param month: Month to inquire
+        :param day: Day to inquire
+        :type year: int
+        :type month: int
+        :type day: int
+
+        :return: Returns meal dictionary
+        :rtype: dict
+        """
         self._validate(year, month)
 
         return self.menus[day - 1]
 
     def get_monthly(self, year, month):
+        """
+        Inquire monthly school meals
+
+        :param year: Year to inquire
+        :param month: Month to inquire
+        :type year: int
+        :type month: int
+
+        :return: Returns meals list
+        :rtype: list
+        """
         self._validate(year, month)
 
         return self.menus
