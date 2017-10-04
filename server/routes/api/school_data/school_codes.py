@@ -65,4 +65,7 @@ class SchoolCode(Resource):
             del data[idx]['_id']
             del data[idx]['web_url']
 
-        return data if data else '', 204
+        if data:
+            return data
+        else:
+            return '', 204
