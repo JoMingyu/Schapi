@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_restful_swagger_2 import Api
+from flask_cors import CORS
 
 app = Flask(__name__)
-api = Api(app)
+CORS(app)
+api = Api(app, api_version='0.1')
 
 
 def route():
