@@ -1,5 +1,4 @@
-﻿# -*- coding: utf8 -*-
-from urllib.request import urlopen
+﻿from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 
@@ -11,7 +10,7 @@ DAEGU = 'stu.dge.go.kr'
 INCHEON = 'stu.ice.go.kr'
 GWANGJU = 'stu.gen.go.kr'
 DAEJEON = 'stu.dje.go.kr'
-ULSAN= 'stu.use.go.kr'
+ULSAN = 'stu.use.go.kr'
 SEJONG = 'stu.sje.go.kr'
 GYEONGGI = 'stu.cbe.go.kr'
 KANGWON = 'stu.kwe.go.kr'
@@ -74,6 +73,7 @@ class SchoolAPI:
             self._parse(year, month)
 
     def _parse(self, year, month):
+        self.menus.clear()
         self.current_year = year
         self.current_month = month
 
@@ -82,8 +82,8 @@ class SchoolAPI:
 
         for data in [td.text for td in soup.find(class_='tbl_type3 tbl_calendar').find_all('td') if td.text != ' ']:
             if len(data) > 1 and data != '자료가 없습니다':
-                day = int(re.findall('\d+', data)[0])
                 daily_menus = re.findall('[가-힇]+', data)
+                # print(daily_menus)
 
                 menu_dict = dict()
                 # timing = list(filter(lambda menu: re.findall('[조중석]{1}식', menu), daily_menus))
@@ -98,15 +98,24 @@ class SchoolAPI:
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
 
                 try:
-                    menu_dict['breakfast'] = menu_dict['조식']
-                    menu_dict['lunch'] = menu_dict['중식']
-                    menu_dict['dinner'] = menu_dict['석식']
-                    del menu_dict['조식'], menu_dict['중식'], menu_dict['석식']
+                    menu_dict['breakfast'] = menu_dict.pop('조식')
+                except KeyError:
+                    pass
+
+                try:
+                    menu_dict['lunch'] = menu_dict.pop('중식')
+                except KeyError:
+                    pass
+
+                try:
+                    menu_dict['dinner'] = menu_dict.pop('석식')
                 except KeyError:
                     pass
 
                 self.menus.append(menu_dict)
+            else:
+                self.menus.append({})
 
 
 if __name__ == '__main__':
-    print(SchoolAPI(DAEJEON, 'G100000170').get_by_date(2017, 10, 19))
+    api = SchoolAPI(DAEJEON, 'G100000170')
