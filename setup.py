@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='schapi',
-      version='0.3.2',
+      version='0.3.3',
       url='https://github.com/JoMingyu/School-API',
       license='MIT',
       author='PlanB',

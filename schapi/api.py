@@ -49,7 +49,7 @@ class SchoolAPI:
         """
         self._validate(year, month)
 
-        return self.menus[day - 1]
+        return self.menus[day]
 
     def get_monthly(self, year, month):
         """
@@ -74,6 +74,7 @@ class SchoolAPI:
 
     def _parse(self, year, month):
         self.menus.clear()
+        self.menus.append({})
         self.current_year = year
         self.current_month = month
 
@@ -82,12 +83,10 @@ class SchoolAPI:
 
         for data in [td.text for td in soup.find(class_='tbl_type3 tbl_calendar').find_all('td') if td.text != ' ']:
             if len(data) > 1 and data != '자료가 없습니다':
-                daily_menus = re.findall('[가-힇]+', data)
-                # print(daily_menus)
+                daily_menus = re.findall('[가-힇]+\(\w+\)|[가-힇]+', data)
 
                 menu_dict = dict()
-                # timing = list(filter(lambda menu: re.findall('[조중석]{1}식', menu), daily_menus))
-                timing = [menu for menu in daily_menus if re.match('[조중석]{1}식', menu)]
+                timing = [menu for menu in daily_menus if re.match('[조중석]식', menu)]
                 # 조식, 중식, 석식 중 있는 데이터만
 
                 for i in range(len(timing)):
@@ -97,20 +96,9 @@ class SchoolAPI:
                     else:
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
 
-                try:
-                    menu_dict['breakfast'] = menu_dict.pop('조식')
-                except KeyError:
-                    pass
-
-                try:
-                    menu_dict['lunch'] = menu_dict.pop('중식')
-                except KeyError:
-                    pass
-
-                try:
-                    menu_dict['dinner'] = menu_dict.pop('석식')
-                except KeyError:
-                    pass
+                menu_dict['breakfast'] = menu_dict.pop('조식', None)
+                menu_dict['lunch'] = menu_dict.pop('중식', None)
+                menu_dict['dinner'] = menu_dict.pop('석식', None)
 
                 self.menus.append(menu_dict)
             else:
