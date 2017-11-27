@@ -96,9 +96,20 @@ class SchoolAPI:
                     else:
                         menu_dict[timing[i]] = daily_menus[daily_menus.index(timing[i]) + 1: daily_menus.index(timing[i + 1])]
 
-                menu_dict['breakfast'] = menu_dict.pop('조식', None)
-                menu_dict['lunch'] = menu_dict.pop('중식', None)
-                menu_dict['dinner'] = menu_dict.pop('석식', None)
+                try:
+                    menu_dict['breakfast'] = menu_dict.pop('조식')
+                except KeyError:
+                    pass
+
+                try:
+                    menu_dict['lunch'] = menu_dict.pop('중식')
+                except KeyError:
+                    pass
+
+                try:
+                    menu_dict['dinner'] = menu_dict.pop('석식')
+                except KeyError:
+                    pass
 
                 self.menus.append(menu_dict)
             else:
